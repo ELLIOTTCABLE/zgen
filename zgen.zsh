@@ -133,16 +133,14 @@ zgen-clone() {
 -zgen-source() {
     local file="${1}"
 
-    source "${file}"
-
-    # Add to ZGEN_LOADED array if not present
     if [[ ! "${ZGEN_LOADED[@]}" =~ "${file}" ]]; then
         ZGEN_LOADED+=("${file}")
+        source "${file}"
+
+        completion_path="$(dirname ${file})"
+
+        -zgen-add-to-fpath "${completion_path}"
     fi
-
-    completion_path="$(dirname ${file})"
-
-    -zgen-add-to-fpath "${completion_path}"
 }
 
 -zgen-prezto-option(){
