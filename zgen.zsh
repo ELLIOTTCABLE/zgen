@@ -234,20 +234,26 @@ zgen-save() {
     echo "fpath=(${(q)ZGEN_COMPLETIONS[@]} \${fpath})" >> "${ZGEN_INIT}"
 
     # Check for file changes
-    if [[ ! -z ${ZGEN_RESET_ON_CHANGE} ]]; then
-       echo >> "${ZGEN_INIT}"
-       echo "#" >> "${ZGEN_INIT}"
-       echo "# Check for file changes" >> "${ZGEN_INIT}"
-       for file in ${ZGEN_RESET_ON_CHANGE}; do
-          CHANGESHA=`shasum -a 256 ${file}`
-          echo "if [[ \"\`shasum -a 256 ${file}\`\" != \"$CHANGESHA\" ]]; then" >> "${ZGEN_INIT}"
-          echo "   echo Changed file ${file}, resetting zgen" >> "${ZGEN_INIT}"
-          echo "   zgen reset" >> "${ZGEN_INIT}"
-          echo -n "el" >> "${ZGEN_INIT}"
-       done
-       echo "se " >> "${ZGEN_INIT}"
-       echo "   ;" >> "${ZGEN_INIT}"
-       echo "fi" >> "${ZGEN_INIT}"
+    if [[ ! -z "${ZGEN_RESET_ON_CHANGE}" ]]; then
+        echo >> "${ZGEN_INIT}"
+        echo "#" >> "${ZGEN_INIT}"
+        echo "# Check for file changes" >> "${ZGEN_INIT}"
+
+        local ages="$(stat -c "%Y" 2>/dev/null $ZGEN_RESET_ON_CHANGE || \
+                      stat -f "%m" 2>/dev/null $ZGEN_RESET_ON_CHANGE)"
+        local shas="$(shasum -a 256 ${ZGEN_RESET_ON_CHANGE})"
+
+        echo "read -rd '' ages <<AGES; read -rd '' shas <<SHAS" >> "${ZGEN_INIT}"
+        echo "$ages\nAGES" >> "${ZGEN_INIT}"
+        echo "$shas\nSHAS" >> "${ZGEN_INIT}"
+
+        echo 'if [[ -n "$ZGEN_RESET_ON_CHANGE" \\' >> "${ZGEN_INIT}"
+        echo '   && "$(stat -c "%Y" 2>/dev/null $ZGEN_RESET_ON_CHANGE || \\' >> "${ZGEN_INIT}"
+        echo '         stat -f "%m"             $ZGEN_RESET_ON_CHANGE)" != "$ages" \\' >> "${ZGEN_INIT}"
+        echo '   && "$(shasum -a 256            $ZGEN_RESET_ON_CHANGE)" != "$shas" ]]; then' >> "${ZGEN_INIT}"
+        echo '   echo '\''zgen: Files in $ZGEN_RESET_ON_CHANGE changed; resetting `init.zsh`...'\' >> "${ZGEN_INIT}"
+        echo '   zgen reset' >> "${ZGEN_INIT}"
+        echo 'fi' >> "${ZGEN_INIT}"
     fi
 
     # load prezto modules
