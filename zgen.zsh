@@ -15,6 +15,10 @@ if [[ -z "${ZGEN_INIT}" ]]; then
     ZGEN_INIT="${ZGEN_DIR}/init.zsh"
 fi
 
+if [[-z "${ZGEN_AUTOLOAD_COMPINIT}" ]]; then
+    ZGEN_AUTOLOAD_COMPINIT=1
+fi
+
 if [[ -z "${ZGEN_LOADED}" ]]; then
     ZGEN_LOADED=()
 fi
@@ -478,8 +482,7 @@ ZSH=$(-zgen-get-zsh)
 zgen-init
 fpath=($ZGEN_SOURCE $fpath)
 
-ZGEN_AUTOLOAD_COMPINIT=${ZGEN_AUTOLOAD_COMPINIT:-true}
-if $ZGEN_AUTOLOAD_COMPINIT; then
+if [[ ${ZGEN_AUTOLOAD_COMPINIT} == 1 ]]; then
     autoload -U compinit
     compinit -d "${ZGEN_DIR}/zcompdump"
 fi
