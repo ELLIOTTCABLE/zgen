@@ -389,7 +389,8 @@ zgen-list() {
 zgen-selfupdate() {
     if [[ -e "${ZGEN_SOURCE}/.git" ]]; then
         (cd "${ZGEN_SOURCE}" \
-            && git pull)
+            && git pull) \
+            && zgen reset
     else
         -zgpute "Not running from a git repository; cannot automatically update."
         return 1
