@@ -407,6 +407,7 @@ zgen-list() {
         cat "${ZGEN_INIT}"
     else
         -zgpute '`init.zsh` missing, please use `zgen save` and then restart your shell.'
+        return 1
     fi
 }
 
@@ -485,7 +486,9 @@ zgen-pmodule() {
 zgen() {
     local cmd="${1}"
     if [[ -z "${cmd}" ]]; then
-        echo "usage: zgen [clone|completions|list|load|oh-my-zsh|pmodule|prezto|reset|save|selfupdate|update]"
+        -zgputs 'usage: `zgen [command | instruction] [options]`'
+        -zgputs "    commands: list, saved, reset, clone, update, selfupdate"
+        -zgputs "    instructions: load, oh-my-zsh, pmodule, prezto, save, apply"
         return 1
     fi
 
@@ -495,6 +498,7 @@ zgen() {
         "zgen-${cmd}" "${@}"
     else
         -zgpute 'Command not found: `'"${cmd}"\`
+        return 1
     fi
 }
 
