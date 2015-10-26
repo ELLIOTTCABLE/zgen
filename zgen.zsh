@@ -294,14 +294,14 @@ zgen-save() {
 }
 
 zgen-apply() {
-  fpath=(${(q-)ZGEN_COMPLETIONS[@]} ${fpath})
+    fpath=(${(q-)ZGEN_COMPLETIONS[@]} ${fpath})
 
-  if [[ ${ZGEN_AUTOLOAD_COMPINIT} == 1 ]]; then
-    -zgpute "Initializing completions ..."
+    if [[ ${ZGEN_AUTOLOAD_COMPINIT} == 1 ]]; then
+        -zgpute "Initializing completions ..."
 
-    autoload -Uz compinit && \
-      compinit $ZGEN_COMPINIT_FLAGS
-  fi
+        autoload -Uz compinit && \
+            compinit $ZGEN_COMPINIT_FLAGS
+    fi
 }
 
 zgen-completions() {
@@ -311,8 +311,8 @@ zgen-completions() {
 }
 
 -zgen-path-contains() {
-  setopt localoptions nonomatch nocshnullglob nonullglob;
-  [ -e "$1"/*"$2"(.,@[1]) ]
+    setopt localoptions nonomatch nocshnullglob nonullglob;
+    [ -e "$1"/*"$2"(.,@[1]) ]
 }
 
 -zgen-get-zsh(){
@@ -328,19 +328,19 @@ zgen-load() {
         -zgpute '`load` requires at least one parameter:'
         -zgpute '`zgen load <repo> [location] [branch]`'
     elif [[ "$#" == 1 && ("${1[1]}" == '/' || "${1[1]}" == '.' ) ]]; then
-      local location="${1}"
+        local location="${1}"
     else
-      local repo="${1}"
-      local file="${2}"
-      local branch="${3:-master}"
-      local dir="$(-zgen-get-clone-dir ${repo} ${branch})"
-      local location="${dir}/${file}"
-      location=${location%/}
+        local repo="${1}"
+        local file="${2}"
+        local branch="${3:-master}"
+        local dir="$(-zgen-get-clone-dir ${repo} ${branch})"
+        local location="${dir}/${file}"
+        location=${location%/}
 
-      # clone repo if not present
-      if [[ ! -d "${dir}" ]]; then
-          zgen-clone "${repo}" "${branch}"
-      fi
+        # clone repo if not present
+        if [[ ! -d "${dir}" ]]; then
+            zgen-clone "${repo}" "${branch}"
+        fi
     fi
 
     # source the file
@@ -462,24 +462,24 @@ zgen-prezto() {
 }
 
 zgen-pmodule() {
-   local repo="${1}"
-   local branch="${2:-master}"
+    local repo="${1}"
+    local branch="${2:-master}"
 
-   local dir="$(-zgen-get-clone-dir ${repo} ${branch})"
+    local dir="$(-zgen-get-clone-dir ${repo} ${branch})"
 
-   # clone repo if not present
-   if [[ ! -d "${dir}" ]]; then
-      zgen-clone "${repo}" "${branch}"
-   fi
+    # clone repo if not present
+    if [[ ! -d "${dir}" ]]; then
+        zgen-clone "${repo}" "${branch}"
+    fi
 
-   local module=$(basename ${repo})
+    local module=$(basename ${repo})
 
-   local preztodir="${ZDOTDIR:-$HOME}/.zprezto/modules/${module}"
-   if [[ ! -h ${preztodir} ]]; then
-      ln -s $dir ${preztodir}
-   fi
+    local preztodir="${ZDOTDIR:-$HOME}/.zprezto/modules/${module}"
+    if [[ ! -h ${preztodir} ]]; then
+        ln -s $dir ${preztodir}
+    fi
 
-   -zgen-prezto-load "'${module}'"
+    -zgen-prezto-load "'${module}'"
 }
 
 zgen() {
