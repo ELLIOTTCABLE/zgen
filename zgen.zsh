@@ -345,6 +345,9 @@ zgen-load() {
     if [[ -f "${location}" ]]; then
         -zgen-source "${location}"
 
+    elif [[ -f "${location}.zsh" ]]; then
+        -zgen-source "${location}.zsh"
+
     # Prezto modules have init.zsh files
     elif [[ -f "${location}/init.zsh" ]]; then
         -zgen-source "${location}/init.zsh"
