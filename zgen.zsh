@@ -24,7 +24,7 @@ if [[ -z "${ZGEN_AUTOLOAD_COMPINIT}" && -z "${(t)_comps}" ]]; then
 fi
 
 if [[ -n "${ZGEN_CUSTOM_COMPDUMP}" ]]; then
-    ZGEN_COMPINIT_DIR_FLAG="-d ${(q)ZGEN_CUSTOM_COMPDUMP}"
+    ZGEN_COMPINIT_DIR_FLAG="-d ${(q-)ZGEN_CUSTOM_COMPDUMP}"
     ZGEN_COMPINIT_FLAGS="${ZGEN_COMPINIT_DIR_FLAG} ${ZGEN_COMPINIT_FLAGS}"
 fi
 
@@ -242,7 +242,7 @@ zgen-save() {
     -zginit ""
     -zginit "# ### General modules"
     for file in "${ZGEN_LOADED[@]}"; do
-        -zginit 'source "'"${(q)file}"\"
+        -zginit "source ${(q-)file}"
     done
 
     # Set up fpath, load completions
@@ -298,7 +298,7 @@ zgen-save() {
 }
 
 zgen-apply() {
-    fpath=(${(q)ZGEN_COMPLETIONS[@]} ${fpath})
+    fpath=(${(q-)ZGEN_COMPLETIONS[@]} ${fpath})
 
     if [[ ${ZGEN_AUTOLOAD_COMPINIT} == 1 ]]; then
         -zgpute "Initializing completions ..."
@@ -462,7 +462,7 @@ zgen-prezto() {
     # this is a prezto option
     else
         shift
-        -zgen-prezto-option ${file} ${(qq)@}
+        -zgen-prezto-option ${file} ${(q-)@}
     fi
 
 }
